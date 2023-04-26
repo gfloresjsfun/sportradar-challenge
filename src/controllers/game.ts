@@ -10,6 +10,7 @@ export default class GameController {
 
   constructor() {}
 
+  // Saving and updating games in the database
   async saveGames(games: Partial<Game>[]): Promise<void> {
     try {
       await this.gameRepository.upsert(games, ["id"]);
@@ -18,6 +19,7 @@ export default class GameController {
     }
   }
 
+  // Ingest game data and saves in the database
   async ingestGameData(gameInfos: Partial<GamePlayer>[]): Promise<void> {
     try {
       await this.gamePlayerRepository.upsert(gameInfos, ["playerId", "gameId"]);
@@ -26,6 +28,7 @@ export default class GameController {
     }
   }
 
+  // get games from ids in the database
   async getGames(ids?: number[]): Promise<Game[]> {
     try {
       if (ids) {
@@ -38,6 +41,7 @@ export default class GameController {
     }
   }
 
+  // Controller that sends games info in the response
   async handleGetGames(req: Request, res: Response): Promise<void> {
     try {
       const games = await this.getGames();
@@ -48,12 +52,13 @@ export default class GameController {
     }
   }
 
+  // Controller that sends a game info in the response
   async handleGetGame(req: Request<{ id: number }>, res: Response): Promise<void> {
     const id = req.params.id;
 
     try {
       const game =
-        (await this.gameRepository.findOne({ where: { id }, relations: { gameInfos: { player: true } } })) || {};
+        (await this.gameRepository.findOne({ where: { id }, relations: { gameInfos: { player: true } } })) || {}; // Get information of a game in a database
 
       res.json(game);
     } catch (e) {

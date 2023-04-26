@@ -14,7 +14,7 @@ const nhlJobManager = new NHLCronManager();
 
 AppDataSource.initialize()
   .then(async () => {
-    nhlJobManager.start();
+    nhlJobManager.start(); // Start NHL jobs manager.
 
     // create express app
     const app = express();
@@ -32,10 +32,12 @@ AppDataSource.initialize()
       });
     });
 
+    // Endpoint for getting jobs in the job manager
     app.get("/jobs", (req, res) => {
       res.json(nhlJobManager.listJobs());
     });
 
+    // Endpoint for reloading information of the games in a season
     app.get("/reload/season/:seasonId", (req, res) => {
       const season = req.params.seasonId;
 
@@ -44,6 +46,7 @@ AppDataSource.initialize()
       res.json("Reloading started");
     });
 
+    // Endpoint for reloading information of a game.
     app.get("/reload/game/:gameId", (req, res) => {
       const game = req.params.gameId;
 
